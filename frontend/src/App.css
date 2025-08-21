@@ -1,0 +1,99 @@
+
+.min-vh-100 {
+  min-height: 100vh;
+}
+
+.card {
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.badge.fs-6 {
+  font-size: 0.875rem !important;
+}
+
+.card {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.border-danger {
+  border-color: #dc3545 !important;
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.breadcrumb {
+  background: none;
+  padding: 0;
+  margin: 0;
+}
+
+.btn-group .btn {
+  border-radius: 0.375rem;
+  margin-right: 0.25rem;
+}
+
+.btn-group .btn:last-child {
+  margin-right: 0;
+}
+
+.is-invalid {
+  border-color: #dc3545;
+}
+
+.invalid-feedback {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+  color: #dc3545;
+}
+
+.task-description {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+@media (max-width: 768px) {
+  .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+  
+  .btn-group .btn {
+    margin-right: 0;
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .card-body .d-flex {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .card-body .d-flex .btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .bg-light {
+    background-color: #343a40 !important;
+  }
+  
+  .card {
+    background-color: #495057;
+    border-color: #6c757d;
+  }
+  
+  .text-muted {
+    color: #adb5bd !important;
+  }
+}
