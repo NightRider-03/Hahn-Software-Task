@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: taskmanagement-postgres
+    environment:
+      POSTGRES_DB: taskmanagement
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sa
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/pgdata
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - taskmanagement-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d taskmanagement"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  taskmanagement-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: taskmanagement-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=taskmanagement;Username=postgres;Password=sa;Include Error Detail=true"
+    ports:
+      - "44314:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - taskmanagement-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: taskmanagement-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@taskmanagement.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - taskmanagement-network
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  taskmanagement-network:
+    driver: bridge
